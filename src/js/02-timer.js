@@ -1,5 +1,8 @@
 // Описаний в документації
 import flatpickr from "flatpickr";
+import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+// import { Report } from 'notiflix/build/notiflix-report-aio';
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
 const dataDays = document.querySelector('[data-days]')
@@ -8,6 +11,7 @@ const dataMinutes = document.querySelector('[data-minutes]')
 const dataSeconds = document.querySelector('[data-seconds]')
 
 let settedTime = 0
+
 
 const startBtn = document.querySelector('[data-start]')
 startBtn.disabled = true
@@ -18,33 +22,38 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
     onClose(selectedDates) {
-    
-    const idInterval = setInterval(() => {
-    if (selectedDates[0].getTime() <= new Date().getTime()) {
-    clearInterval(idInterval)
-    alert("Please choose a date in the future")
+        settedTime = selectedDates[0].getTime()
+        const deltaTime = settedTime - new Date().getTime()
+    if (deltaTime <= 0) {
+    Notiflix.Notify.failure('Please choose a date in the future');
     } else {
-    startBtn.disabled = false;
-    settedTime = selectedDates[0].getTime() - new Date().getTime()
-    console.log(convertMs(settedTime))
+    startBtn.disabled = false
     }
-        
-    }, 1000)
+   
   },
 };
 
 const input = flatpickr("#datetime-picker", options);
 
 startBtn.addEventListener('click', onClick)
+
 function onClick() {
-    setInterval(() => {
-        dataDays.textContent = convertMs(settedTime).days.toString().padStart(2, '0')
-        dataHours.textContent = convertMs(settedTime).hours.toString().padStart(2, '0')
-        dataMinutes.textContent = convertMs(settedTime).minutes .toString().padStart(2, '0')
-        dataSeconds.textContent = convertMs(settedTime).seconds.toString().padStart(2, '0') 
+    const idIterval = setInterval(() => {
+        const deltaTime = settedTime - new Date().getTime()
+        startBtn.disabled = true
+        
+        if (deltaTime <= 0) {
+            Notiflix.Notify.success('Time is out!');
+            startBtn.disabled = false
+            return clearInterval(idIterval)
+        }
+
+        dataDays.textContent = convertMs(deltaTime).days.toString().padStart(2, '0')
+        dataHours.textContent = convertMs(deltaTime).hours.toString().padStart(2, '0')
+        dataMinutes.textContent = convertMs(deltaTime).minutes.toString().padStart(2, '0')
+        dataSeconds.textContent = convertMs(deltaTime).seconds.toString().padStart(2, '0') 
     },1000 )
 }
-
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
