@@ -1,7 +1,6 @@
 // Описаний в документації
 import flatpickr from "flatpickr";
 import Notiflix from 'notiflix';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 // import { Report } from 'notiflix/build/notiflix-report-aio';
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
@@ -35,29 +34,32 @@ const options = {
 
 const input = flatpickr("#datetime-picker", options);
 
+
 startBtn.addEventListener('click', onClick)
 
 function onClick() {
-    const idIterval = setInterval(() => {
-        const deltaTime = settedTime - new Date().getTime()
-        startBtn.disabled = true
-        
-        if (deltaTime <= 0) {
-            Notiflix.Notify.success('Time is out!');
-            startBtn.disabled = false
-            return clearInterval(idIterval)
-        }
+  const idIterval = setInterval(() => {
+    const deltaTime = settedTime - new Date().getTime()
+    startBtn.disabled = true
+    
+    if (deltaTime <= 0) {
+        Notiflix.Notify.success('Time is out!');
+        startBtn.disabled = false
+        return clearInterval(idIterval)
+    }
 
-        dataDays.textContent = convertMs(deltaTime).days.toString().padStart(2, '0')
-        dataHours.textContent = convertMs(deltaTime).hours.toString().padStart(2, '0')
-        dataMinutes.textContent = convertMs(deltaTime).minutes.toString().padStart(2, '0')
-        dataSeconds.textContent = convertMs(deltaTime).seconds.toString().padStart(2, '0') 
+    dataDays.textContent = convertMs(deltaTime).days.toString().padStart(2, '0')
+    dataHours.textContent = convertMs(deltaTime).hours.toString().padStart(2, '0')
+    dataMinutes.textContent = convertMs(deltaTime).minutes.toString().padStart(2, '0')
+    dataSeconds.textContent = convertMs(deltaTime).seconds.toString().padStart(2, '0') 
+      
     },1000 )
 }
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
+  
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
