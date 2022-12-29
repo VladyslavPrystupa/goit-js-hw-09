@@ -8,9 +8,9 @@ const dataDays = document.querySelector('[data-days]')
 const dataHours = document.querySelector('[data-hours]')
 const dataMinutes = document.querySelector('[data-minutes]')
 const dataSeconds = document.querySelector('[data-seconds]')
-
+const inputSet = document.querySelector('#datetime-picker')
 let settedTime = 0
-
+let deltaTime = 0
 
 const startBtn = document.querySelector('[data-start]')
 startBtn.disabled = true
@@ -26,7 +26,7 @@ const options = {
     if (deltaTime <= 0) {
     Notiflix.Notify.failure('Please choose a date in the future');
     } else {
-    startBtn.disabled = false
+      startBtn.disabled = false
     }
    
   },
@@ -34,27 +34,40 @@ const options = {
 
 const input = flatpickr("#datetime-picker", options);
 
-
 startBtn.addEventListener('click', onClick)
 
 function onClick() {
+  inputSet.disabled = true
+  startBtn.disabled = true
   const idIterval = setInterval(() => {
-    const deltaTime = settedTime - new Date().getTime()
-    startBtn.disabled = true
-    
+    deltaTime = settedTime - new Date().getTime()
+
+    const time = convertMs(deltaTime)
+
     if (deltaTime <= 0) {
-        Notiflix.Notify.success('Time is out!');
-        startBtn.disabled = false
-        return clearInterval(idIterval)
+      Notiflix.Notify.success('Time is out!');
+      startBtn.disabled = false
+      inputSet.disabled = false
+      return clearInterval(idIterval)
     }
 
-    dataDays.textContent = convertMs(deltaTime).days.toString().padStart(2, '0')
-    dataHours.textContent = convertMs(deltaTime).hours.toString().padStart(2, '0')
-    dataMinutes.textContent = convertMs(deltaTime).minutes.toString().padStart(2, '0')
-    dataSeconds.textContent = convertMs(deltaTime).seconds.toString().padStart(2, '0') 
-      
+    dataDays.textContent = time.days
+    dataHours.textContent = time.hours
+    dataMinutes.textContent = time.minutes
+    dataSeconds.textContent = time.seconds 
+
+    dataDays.textContent = addLeadingZero(dataDays.textContent)
+    dataHours.textContent = addLeadingZero(dataHours.textContent)
+    dataMinutes.textContent = addLeadingZero(dataMinutes.textContent)
+    dataSeconds.textContent = addLeadingZero(dataSeconds.textContent)
+
     },1000 )
 }
+
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0')
+}
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
