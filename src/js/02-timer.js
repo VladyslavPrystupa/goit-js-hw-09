@@ -43,7 +43,7 @@ function onClick() {
     deltaTime = settedTime - new Date().getTime()
 
     const time = convertMs(deltaTime)
-
+    
     if (deltaTime <= 0) {
       Notiflix.Notify.success('Time is out!');
       startBtn.disabled = false
@@ -51,15 +51,10 @@ function onClick() {
       return clearInterval(idIterval)
     }
 
-    dataDays.textContent = time.days
-    dataHours.textContent = time.hours
-    dataMinutes.textContent = time.minutes
-    dataSeconds.textContent = time.seconds 
-
-    dataDays.textContent = addLeadingZero(dataDays.textContent)
-    dataHours.textContent = addLeadingZero(dataHours.textContent)
-    dataMinutes.textContent = addLeadingZero(dataMinutes.textContent)
-    dataSeconds.textContent = addLeadingZero(dataSeconds.textContent)
+    dataDays.textContent = addLeadingZero(time.days)
+    dataHours.textContent = addLeadingZero(time.hours)
+    dataMinutes.textContent = addLeadingZero(time.minutes)
+    dataSeconds.textContent = addLeadingZero(time.seconds)
 
     },1000 )
 }
